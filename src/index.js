@@ -4,9 +4,22 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { fdsRouter } from './routes/fds.js';
 import { insurancesRouter } from './routes/insurances.js';
+import { usersRouter } from './routes/users.js';
 
 const PORT = Number(process.env.PORT);
 const MONGODB_URI = process.env.MONGODB_URI;
+const JWT_SECRET = process.env.JWT_SECRET;
+
+// Validate required environment variables
+if (!JWT_SECRET) {
+  console.error('ERROR: JWT_SECRET is not set in .env file');
+  process.exit(1);
+}
+
+if (!MONGODB_URI) {
+  console.error('ERROR: MONGODB_URI is not set in .env file');
+  process.exit(1);
+}
 
 const app = express();
 
@@ -17,6 +30,7 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true });
 });
 
+app.use('/api/users', usersRouter);
 app.use('/api/fds', fdsRouter);
 app.use('/api/insurances', insurancesRouter);
 
